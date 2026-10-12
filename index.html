@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Martin Manampisoa – Développeur fullstack web et mobile</title>
+    <meta name="description" content="Portfolio de Martin Manampisoa, développeur fullstack web et mobile à Antananarivo : React, TypeScript, Node.js, React Native et Supabase." />
+    <meta name="theme-color" content="#1F3864" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Martin Manampisoa – Développeur fullstack web et mobile" />
+    <meta property="og:description" content="Applications web et mobiles, du back-end à l'interface. Découvrez mes projets et contactez-moi." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <script>
+      // Applique le thème avant le premier rendu pour éviter un flash.
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+        } catch (e) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

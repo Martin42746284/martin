@@ -1,0 +1,598 @@
+/* =====================================================================
+   Administration. Réutilise les couleurs et les boutons du site.
+   ===================================================================== */
+
+.muted {
+  color: var(--muted);
+}
+
+code {
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+  background: var(--band);
+  font-size: 0.92em;
+}
+
+.btn--small {
+  padding: 0.5rem 0.95rem;
+  font-size: 0.95rem;
+}
+
+.btn--text {
+  background: none;
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.btn--danger {
+  margin-left: auto;
+  border-color: color-mix(in srgb, var(--danger) 45%, var(--line));
+  background: transparent;
+  color: var(--danger);
+}
+
+.btn--danger:hover {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ---------- Connexion ---------- */
+
+.login {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+}
+
+.login__card {
+  width: min(100%, 26rem);
+  padding: clamp(1.5rem, 4vw, 2.25rem);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.login__card h1 {
+  margin-bottom: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 720;
+  letter-spacing: -0.03em;
+}
+
+.login__card > .muted {
+  margin-bottom: 1.5rem;
+}
+
+.login__card .btn {
+  margin-top: 1rem;
+}
+
+.login__submit {
+  width: 100%;
+}
+
+.login__back {
+  margin-top: 1.25rem;
+  text-align: center;
+}
+
+/* ---------- Cadre général ---------- */
+
+.adm {
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.adm__bar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.75rem clamp(1rem, 3vw, 2rem);
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.adm__brand {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.adm__user {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.adm__user a {
+  color: var(--brand);
+  font-weight: 600;
+}
+
+.adm__body {
+  display: grid;
+  grid-template-columns: 14rem minmax(0, 1fr);
+  gap: clamp(1rem, 3vw, 2.5rem);
+  width: min(100%, 84rem);
+  margin-inline: auto;
+  padding: clamp(1rem, 3vw, 2rem);
+  align-items: start;
+}
+
+.adm__nav {
+  position: sticky;
+  top: 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.adm__tab {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.7rem 0.95rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.adm__tab:hover {
+  background: var(--band);
+  color: var(--ink);
+}
+
+.adm__tab[aria-current='page'] {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.badge {
+  min-width: 1.4rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.panel {
+  padding: clamp(1.1rem, 2.5vw, 2rem);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+.panel__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.panel__head h2 {
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.panel__head p {
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.panel__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+/* ---------- Liste et éditeur ---------- */
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(13rem, 19rem) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.list-wrap {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.list__filter {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+
+.list {
+  display: grid;
+  max-height: 34rem;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.list__item {
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--line);
+}
+
+.list__item:last-child {
+  border-bottom: 0;
+}
+
+.list__item[data-active='true'] {
+  background: color-mix(in srgb, var(--accent) 11%, var(--surface));
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.list__main {
+  display: grid;
+  flex: 1;
+  gap: 0.1rem;
+  min-width: 0;
+  padding: 0.7rem 0.9rem;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.list__title {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list__sub {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.list__move {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 0.4rem;
+}
+
+.list__move button {
+  width: 1.8rem;
+  height: 1.5rem;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.list__move button:hover:not(:disabled) {
+  background: var(--band);
+  color: var(--ink);
+}
+
+.list__move button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.editor {
+  min-width: 0;
+}
+
+/* ---------- Formulaires ---------- */
+
+.record__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1.25rem;
+}
+
+.field--wide {
+  grid-column: 1 / -1;
+}
+
+.field__hint {
+  margin-top: 0.35rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.field__error {
+  margin-top: 0.4rem;
+  color: var(--danger);
+  font-size: 0.95rem;
+}
+
+.record__actions {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding: 1rem 0;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.switch {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.7rem;
+  margin: 0 !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+}
+
+.field .switch input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.switch__track {
+  position: relative;
+  width: 2.7rem;
+  height: 1.55rem;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background 0.2s ease;
+}
+
+.switch__track::after {
+  content: '';
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.25s cubic-bezier(0.3, 1.4, 0.5, 1);
+}
+
+.switch input:checked + .switch__track {
+  background: var(--accent);
+}
+
+.switch input:checked + .switch__track::after {
+  transform: translateX(1.15rem);
+}
+
+.switch input:focus-visible + .switch__track {
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.upload {
+  display: grid;
+  gap: 0.6rem;
+  justify-items: start;
+}
+
+.upload__preview {
+  max-width: 16rem;
+  max-height: 11rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.upload__file {
+  overflow-wrap: anywhere;
+  color: var(--brand);
+  font-weight: 500;
+}
+
+.upload__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.upload label.btn {
+  margin: 0;
+  cursor: pointer;
+}
+
+.upload input:focus-visible + .btn,
+.upload label:has(+ input:focus-visible) {
+  outline: 3px solid var(--ring);
+  outline-offset: 3px;
+}
+
+/* ---------- Messages ---------- */
+
+.messages {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.message {
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--bg);
+}
+
+.message[data-read='false'] {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+}
+
+.message__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+
+.message__head h3 {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 680;
+}
+
+.message__head a {
+  color: var(--brand);
+}
+
+.message__head time {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.message__dot {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.message__subject {
+  margin-top: 0.8rem;
+  font-weight: 650;
+}
+
+.message__subject + .message__body {
+  margin-top: 0.3rem;
+}
+
+.message__body {
+  margin-top: 0.8rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+/* ---------- Notifications ---------- */
+
+.toasts {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 100;
+  display: grid;
+  gap: 0.5rem;
+  max-width: min(24rem, calc(100vw - 2rem));
+}
+
+.toast {
+  padding: 0.8rem 1.1rem;
+  border-radius: 12px;
+  background: var(--ink);
+  color: var(--bg);
+  box-shadow: var(--shadow);
+  font-weight: 500;
+}
+
+.toast[data-kind='error'] {
+  background: #b3261e;
+  color: #fff;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: toast-in 0.35s cubic-bezier(0.2, 0.75, 0.2, 1);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* ---------- Écrans étroits ---------- */
+
+@media (max-width: 860px) {
+  .adm__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .adm__nav {
+    position: static;
+    flex-direction: row;
+    padding-bottom: 0.25rem;
+    overflow-x: auto;
+  }
+
+  .adm__tab {
+    flex: none;
+  }
+
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .list {
+    max-height: 16rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .record__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .adm__email {
+    display: none;
+  }
+}

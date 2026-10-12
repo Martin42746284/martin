@@ -45,7 +45,7 @@ const PROJECT_FIELDS: FieldDef[] = [
   { key: 'github_url', label: 'Lien GitHub', type: 'url', nullable: true, placeholder: 'https://github.com/…' },
   { key: 'live_url', label: 'Lien du site en ligne', type: 'url', nullable: true, placeholder: 'https://…', hint: 'Ajoute un bouton « Voir le site ».' },
   { key: 'image_path', label: 'Capture d’écran', type: 'image', folder: 'projects', nameFrom: 'slug', maxSide: 1400, wide: true },
-  { key: 'featured', label: 'Ouvert par défaut sur le site', type: 'boolean', wide: true },
+  { key: 'featured', label: 'Mise en avant (badge << A la une >>)', type: 'boolean', wide: true },
 ];
 
 const SERVICE_FIELDS: FieldDef[] = [

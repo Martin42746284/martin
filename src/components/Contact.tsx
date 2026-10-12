@@ -1,13 +1,23 @@
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, type ReactNode } from 'react';
 import { useI18n } from '../lib/i18n';
-import { supabase } from '../lib/supabase';
+import { assetUrl, supabase } from '../lib/supabase';
 import type { ContactMessage, Profile } from '../lib/types';
-import { CheckIcon, GithubIcon, LinkedinIcon, MailIcon, PhoneIcon, PinIcon } from './icons';
+import { CheckIcon, DownloadIcon, GithubIcon, LinkedinIcon, MailIcon, PhoneIcon, PinIcon } from './icons';
+import { Reveal } from './Reveal';
 import { SectionHead } from './SectionHead';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 const COOLDOWN_MS = 30_000;
+const LOCAL_CV: Record<string, string> = { fr: '/CV_Martin_Manampisoa.pdf', en: '/CV_Martin_Manampisoa_EN.pdf' };
+
+interface InfoRow {
+  icon: ReactNode;
+  label: string;
+  value: string;
+  href?: string;
+  external?: boolean;
+}
 
 function recentlySent(): boolean {
   try {
@@ -27,7 +37,7 @@ function markSent() {
 }
 
 export function Contact({ profile }: { profile: Profile }) {
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const [status, setStatus] = useState<Status>('idle');
   const [feedback, setFeedback] = useState('');
 
@@ -85,82 +95,102 @@ export function Contact({ profile }: { profile: Profile }) {
 
   const sending = status === 'sending';
 
+  const rows: InfoRow[] = [];
+  if (profile.email) rows.push({ icon: <MailIcon />, label: t('contact.labelEmail'), value: profile.email, href: `mailto:${profile.email}` });
+  if (profile.phone) rows.push({ icon: <PhoneIcon />, label: t('contact.labelPhone'), value: profile.phone, href: `tel:${profile.phone.replace(/\s/g, '')}` });
+  if (profile.github_url) rows.push({ icon: <GithubIcon />, label: 'GitHub', value: profile.github_url.replace(/^https?:\/\//, ''), href: profile.github_url, external: true });
+  if (profile.linkedin_url) rows.push({ icon: <LinkedinIcon />, label: 'LinkedIn', value: profile.linkedin_url.replace(/^https?:\/\/(www\.)?/, ''), href: profile.linkedin_url, external: true });
+  if (profile.location) rows.push({ icon: <PinIcon />, label: t('contact.labelPlace'), value: profile.location });
+
+  const rowContent = (row: InfoRow) => (
+    <>
+      <span className="contact__icon">{row.icon}</span>
+      <span>
+        <span className="contact__label">{row.label}</span>
+        <span className="contact__value">{row.value}</span>
+      </span>
+    </>
+  );
+
   return (
     <section className="section" aria-labelledby="contact">
       <div className="container">
         <SectionHead id="contact" title={t('contact.title')} lead={t('contact.lead')} />
 
         <div className="contact">
-          <ul className="contact__list">
-            {profile.email && (
-              <li>
-                <MailIcon />
-                <a href={`mailto:${profile.email}`}>{profile.email}</a>
-              </li>
-            )}
-            {profile.phone && (
-              <li>
-                <PhoneIcon />
-                <a href={`tel:${profile.phone.replace(/\s/g, '')}`}>{profile.phone}</a>
-              </li>
-            )}
-            {profile.github_url && (
-              <li>
-                <GithubIcon />
-                <a href={profile.github_url} target="_blank" rel="noopener noreferrer">
-                  {profile.github_url.replace(/^https?:\/\//, '')}
-                </a>
-              </li>
-            )}
-            {profile.linkedin_url && (
-              <li>
-                <LinkedinIcon />
-                <a href={profile.linkedin_url} target="_blank" rel="noopener noreferrer">
-                  LinkedIn
-                </a>
-              </li>
-            )}
-            {profile.location && (
-              <li>
-                <PinIcon />
-                <span>{profile.location}</span>
-              </li>
-            )}
-          </ul>
+          <Reveal className="contact__side" variant="left">
+            <ul className="contact__list">
+              {rows.map((row) => (
+                <li key={row.label}>
+                  {row.href ? (
+                    <a
+                      className="contact__row"
+                      href={row.href}
+                      {...(row.external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                    >
+                      {rowContent(row)}
+                    </a>
+                  ) : (
+                    <div className="contact__row">{rowContent(row)}</div>
+                  )}
+                </li>
+              ))}
+            </ul>
 
-          <form className="form" onSubmit={onSubmit} noValidate={false}>
-            <div className="field">
-              <label htmlFor="c-name">{t('contact.name')}</label>
-              <input id="c-name" name="name" type="text" autoComplete="name" required maxLength={100} />
+            <div className="contact__card">
+              <span className="cover__arches contact__arches" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+              {profile.available && (
+                <p className="status">
+                  <span className="status__dot" aria-hidden="true" />
+                  {t('hero.status')}
+                </p>
+              )}
+              <p className="contact__cardtext">{t('contact.cardText')}</p>
+              <a className="btn btn--ghost" href={assetUrl(profile.cv_path) ?? LOCAL_CV[lang]} target="_blank" rel="noopener noreferrer">
+                <DownloadIcon /> {t('hero.cv')}
+              </a>
             </div>
-            <div className="field">
-              <label htmlFor="c-email">{t('contact.email')}</label>
-              <input id="c-email" name="email" type="email" autoComplete="email" required maxLength={200} />
-            </div>
-            <div className="field">
-              <label htmlFor="c-subject">{t('contact.subject')}</label>
-              <input id="c-subject" name="subject" type="text" required maxLength={150} placeholder={t('contact.subjectPlaceholder')} />
-            </div>
-            <div className="field">
-              <label htmlFor="c-message">{t('contact.message')}</label>
-              <textarea id="c-message" name="message" rows={6} required minLength={10} maxLength={3000} />
-            </div>
+          </Reveal>
 
-            <div className="sr-only" aria-hidden="true">
-              <label htmlFor="c-website">Ne pas remplir ce champ</label>
-              <input id="c-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
-            </div>
+          <Reveal variant="right" delay={120}>
+            <form className="form" onSubmit={onSubmit} noValidate={false}>
+              <div className="field">
+                <label htmlFor="c-name">{t('contact.name')}</label>
+                <input id="c-name" name="name" type="text" autoComplete="name" required maxLength={100} />
+              </div>
+              <div className="field">
+                <label htmlFor="c-email">{t('contact.email')}</label>
+                <input id="c-email" name="email" type="email" autoComplete="email" required maxLength={200} />
+              </div>
+              <div className="field">
+                <label htmlFor="c-subject">{t('contact.subject')}</label>
+                <input id="c-subject" name="subject" type="text" required maxLength={150} placeholder={t('contact.subjectPlaceholder')} />
+              </div>
+              <div className="field">
+                <label htmlFor="c-message">{t('contact.message')}</label>
+                <textarea id="c-message" name="message" rows={6} required minLength={10} maxLength={3000} />
+              </div>
 
-            <div className="form__footer">
-              <button className="btn btn--primary" type="submit" disabled={sending}>
-                {sending ? t('contact.sending') : t('contact.send')}
-              </button>
-              <p className="form__status" role="status" data-status={status}>
-                {status === 'sent' && <CheckIcon className="form__check" />}
-                {feedback}
-              </p>
-            </div>
-          </form>
+              <div className="sr-only" aria-hidden="true">
+                <label htmlFor="c-website">Ne pas remplir ce champ</label>
+                <input id="c-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+              </div>
+
+              <div className="form__footer">
+                <button className="btn btn--primary" type="submit" disabled={sending}>
+                  {sending ? t('contact.sending') : t('contact.send')}
+                </button>
+                <p className="form__status" role="status" data-status={status}>
+                  {status === 'sent' && <CheckIcon className="form__check" />}
+                  {feedback}
+                </p>
+              </div>
+            </form>
+          </Reveal>
         </div>
       </div>
     </section>

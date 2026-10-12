@@ -1,15 +1,14 @@
 import { useState, type FormEvent, type ReactNode } from 'react';
 import { useI18n } from '../lib/i18n';
-import { assetUrl, supabase } from '../lib/supabase';
+import { supabase } from '../lib/supabase';
 import type { ContactMessage, Profile } from '../lib/types';
-import { CheckIcon, DownloadIcon, GithubIcon, LinkedinIcon, MailIcon, PhoneIcon, PinIcon } from './icons';
+import { CheckIcon, GithubIcon, LinkedinIcon, MailIcon, PhoneIcon, PinIcon } from './icons';
 import { Reveal } from './Reveal';
 import { SectionHead } from './SectionHead';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 const COOLDOWN_MS = 30_000;
-const LOCAL_CV: Record<string, string> = { fr: '/CV_Martin_Manampisoa.pdf', en: '/CV_Martin_Manampisoa_EN.pdf' };
 
 interface InfoRow {
   icon: ReactNode;
@@ -37,7 +36,7 @@ function markSent() {
 }
 
 export function Contact({ profile }: { profile: Profile }) {
-  const { t, lang } = useI18n();
+  const { t } = useI18n();
   const [status, setStatus] = useState<Status>('idle');
   const [feedback, setFeedback] = useState('');
 
@@ -136,24 +135,6 @@ export function Contact({ profile }: { profile: Profile }) {
                 </li>
               ))}
             </ul>
-
-            <div className="contact__card">
-              <span className="cover__arches contact__arches" aria-hidden="true">
-                <i />
-                <i />
-                <i />
-              </span>
-              {profile.available && (
-                <p className="status">
-                  <span className="status__dot" aria-hidden="true" />
-                  {t('hero.status')}
-                </p>
-              )}
-              <p className="contact__cardtext">{t('contact.cardText')}</p>
-              <a className="btn btn--ghost" href={assetUrl(profile.cv_path) ?? LOCAL_CV[lang]} target="_blank" rel="noopener noreferrer">
-                <DownloadIcon /> {t('hero.cv')}
-              </a>
-            </div>
           </Reveal>
 
           <Reveal variant="right" delay={120}>
@@ -172,7 +153,7 @@ export function Contact({ profile }: { profile: Profile }) {
               </div>
               <div className="field">
                 <label htmlFor="c-message">{t('contact.message')}</label>
-                <textarea id="c-message" name="message" rows={6} required minLength={10} maxLength={3000} />
+                <textarea id="c-message" name="message" rows={2} required minLength={10} maxLength={3000} />
               </div>
 
               <div className="sr-only" aria-hidden="true">

@@ -58,7 +58,7 @@ export const fallback: PortfolioData = {
     {
       "category": "Langages",
       "name": "Python",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 3,
       "category_en": "Languages"
     },
@@ -72,7 +72,7 @@ export const fallback: PortfolioData = {
     {
       "category": "Langages",
       "name": "Java",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 5,
       "category_en": "Languages"
     },
@@ -114,28 +114,28 @@ export const fallback: PortfolioData = {
     {
       "category": "Front-end",
       "name": "Vue.js",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 11,
       "category_en": "Front end"
     },
     {
       "category": "Front-end",
       "name": "Tailwind CSS",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 12,
       "category_en": "Front end"
     },
     {
       "category": "Front-end",
       "name": "HTML5",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 13,
       "category_en": "Front end"
     },
     {
       "category": "Front-end",
       "name": "CSS3",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 14,
       "category_en": "Front end"
     },
@@ -149,7 +149,7 @@ export const fallback: PortfolioData = {
     {
       "category": "Back-end",
       "name": "Express",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 16,
       "category_en": "Back end"
     },
@@ -177,7 +177,7 @@ export const fallback: PortfolioData = {
     {
       "category": "Back-end",
       "name": "GraphQL",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 20,
       "category_en": "Back end"
     },
@@ -191,14 +191,14 @@ export const fallback: PortfolioData = {
     {
       "category": "Mobile",
       "name": "Expo",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 22,
       "category_en": "Mobile"
     },
     {
       "category": "Mobile",
       "name": "Flutter",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 23,
       "category_en": "Mobile"
     },
@@ -212,21 +212,21 @@ export const fallback: PortfolioData = {
     {
       "category": "Bases de données",
       "name": "MySQL",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 25,
       "category_en": "Databases"
     },
     {
       "category": "Bases de données",
       "name": "MongoDB",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 26,
       "category_en": "Databases"
     },
     {
       "category": "Bases de données",
       "name": "Firebase",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 27,
       "category_en": "Databases"
     },
@@ -240,14 +240,14 @@ export const fallback: PortfolioData = {
     {
       "category": "IA et données",
       "name": "scikit-learn",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 29,
       "category_en": "AI and data"
     },
     {
       "category": "IA et données",
       "name": "API OpenAI",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 30,
       "category_en": "AI and data"
     },
@@ -261,7 +261,7 @@ export const fallback: PortfolioData = {
     {
       "category": "Outils et méthodes",
       "name": "Docker",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 32,
       "category_en": "Tools and methods"
     },
@@ -275,14 +275,14 @@ export const fallback: PortfolioData = {
     {
       "category": "Outils et méthodes",
       "name": "Postman",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 34,
       "category_en": "Tools and methods"
     },
     {
       "category": "Outils et méthodes",
       "name": "Agile/Scrum",
-      "is_core": false,
+      "is_core": true,
       "sort_order": 35,
       "category_en": "Tools and methods"
     }

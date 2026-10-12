@@ -1,18 +1,242 @@
--- Contenu initial, en français et en anglais.
--- Ce fichier n'écrase JAMAIS ce que vous avez modifié dans l'administration :
--- il ne remplit que ce qui est vide (y compris les traductions anglaises manquantes).
--- Vous pouvez donc le relancer sans risque.
+-- Portfolio de Martin Manampisoa : schéma Supabase (version avec administration)
+-- Schéma et sécurité du portfolio Supabase.
+-- Sûr à relancer : aucune donnée n'est supprimée.
+-- =====================================================================
 
-insert into public.profile (id, full_name, title, title_en, tagline, tagline_en, hero_words, hero_words_en, bio, bio_en, location, languages, languages_en, education, education_en, email, phone, github_url, linkedin_url, photo_path, cv_path, cv_path_en, available)
-values (1, 'Martin Manampisoa', 'Développeur web et mobile fullstack', 'Fullstack web and mobile developer', 'Jeune diplômé en informatique, je cherche une équipe où progresser sur des projets concrets, du back-end jusqu’à l’interface.', 'Recent computer science graduate looking for a team where I can grow on real projects, from the back end to the interface.', array['des applications web rapides', 'des applications mobiles React Native', 'des API REST sécurisées', 'des outils de gestion sur mesure', 'des fonctionnalités d’IA']::text[], array['fast web applications', 'React Native mobile apps', 'secure REST APIs', 'custom management tools', 'AI-powered features']::text[], 'Diplômé d’une licence en informatique (mention Bien) à l’Université Adventiste Zurcher, à Antsirabe, je construis des applications complètes avec React, TypeScript et Node.js, sur le web comme sur mobile avec React Native.
+-- ---------- Tables ----------
 
-Pendant mon stage chez Connect Talent, j’ai développé une application de gestion d’hôtel et réduit de 30 % le temps de chargement des pages en optimisant les requêtes et le bundle. Mon projet de fin d’études, Skill2Study, aide les bacheliers à choisir leur filière grâce à un moteur de recommandation.
+create table if not exists public.profile (
+  id           int primary key default 1 check (id = 1),   -- une seule ligne
+  full_name    text not null,
+  title        text not null,
+  tagline      text not null,
+  hero_words   text[] not null default '{}',               -- mots qui défilent après « Je construis »
+  bio          text not null,                              -- paragraphes séparés par une ligne vide
+  location     text,
+  languages    text,
+  education    text,
+  email        text,
+  phone        text,                                       -- laissez vide pour ne pas l'afficher
+  github_url   text,
+  linkedin_url text,                                       -- laissez vide pour ne pas l'afficher
+  photo_path   text,                                       -- chemin dans le bucket "portfolio"
+  cv_path      text,                                       -- chemin dans le bucket "portfolio"
+  available    boolean not null default true,
+  updated_at   timestamptz not null default now()
+);
+-- Pour les bases créées avec la première version du schéma :
+alter table public.profile add column if not exists hero_words text[] not null default '{}';
+alter table public.profile add column if not exists education text;
 
-J’aime les projets où le code résout un problème concret, et je travaille volontiers en équipe Agile : sprints, revues de code, livraisons fréquentes.', 'I hold a bachelor’s degree in computer science (mention Bien) from Université Adventiste Zurcher in Antsirabe. I build complete applications with React, TypeScript and Node.js, on the web and on mobile with React Native.
+create table if not exists public.skills (
+  id         bigint generated always as identity primary key,
+  category   text not null,
+  name       text not null,
+  is_core    boolean not null default false,               -- affiché en gras
+  sort_order int not null default 0
+);
+
+create table if not exists public.services (
+  id          bigint generated always as identity primary key,
+  icon        text not null default 'web' check (icon in ('web', 'mobile', 'api', 'business', 'ai', 'speed')),
+  title       text not null,
+  description text not null,
+  tags        text[] not null default '{}',
+  sort_order  int not null default 0
+);
+
+create table if not exists public.stats (
+  id         bigint generated always as identity primary key,
+  value      numeric not null,
+  suffix     text not null default '',
+  label      text not null,
+  sort_order int not null default 0
+);
+
+create table if not exists public.projects (
+  id         bigint generated always as identity primary key,
+  slug       text not null unique,
+  title      text not null,
+  subtitle   text,
+  category   text not null check (category in ('Web', 'Mobile', 'API')),
+  summary    text not null,
+  highlights text[] not null default '{}',
+  stack      text[] not null default '{}',
+  github_url text,
+  live_url   text,
+  image_path text,                                         -- ex. projects/skill2study.png dans le bucket
+  year       int,
+  featured   boolean not null default false,               -- ouvert par défaut sur le site
+  sort_order int not null default 0
+);
+
+create table if not exists public.messages (
+  id         bigint generated always as identity primary key,
+  name       text not null check (char_length(name) between 1 and 100),
+  email      text not null check (char_length(email) between 5 and 200),
+  subject    text not null default '' check (char_length(subject) <= 150),
+  message    text not null check (char_length(message) between 10 and 3000),
+  read       boolean not null default false,
+  created_at timestamptz not null default now()
+);
+alter table public.messages add column if not exists read boolean not null default false;
+alter table public.messages add column if not exists subject text not null default '' check (char_length(subject) <= 150);
+
+-- ---------- Traductions anglaises ----------
+-- Chaque texte traduisible a une colonne « _en ». Si elle est vide, le site affiche le texte français.
+
+alter table public.profile  add column if not exists title_en       text;
+alter table public.profile  add column if not exists tagline_en     text;
+alter table public.profile  add column if not exists hero_words_en  text[] not null default '{}';
+alter table public.profile  add column if not exists bio_en         text;
+alter table public.profile  add column if not exists languages_en   text;
+alter table public.profile  add column if not exists education_en   text;
+alter table public.profile  add column if not exists cv_path_en     text;   -- CV en anglais dans le bucket
+
+alter table public.skills   add column if not exists category_en    text;
+
+alter table public.services add column if not exists title_en       text;
+alter table public.services add column if not exists description_en text;
+alter table public.services add column if not exists tags_en        text[] not null default '{}';
+
+alter table public.stats    add column if not exists label_en       text;
+
+alter table public.projects add column if not exists subtitle_en    text;
+alter table public.projects add column if not exists summary_en     text;
+alter table public.projects add column if not exists highlights_en  text[] not null default '{}';
+
+-- Comptes autorisés à utiliser l'administration (voir make-admin.sql).
+create table if not exists public.admins (
+  user_id uuid primary key references auth.users (id) on delete cascade
+);
+
+-- ---------- Fonction : l'utilisateur connecté est-il administrateur ? ----------
+
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (select 1 from public.admins where user_id = auth.uid());
+$$;
+
+revoke all on function public.is_admin() from public;
+grant execute on function public.is_admin() to anon, authenticated;
+
+-- ---------- Sécurité (Row Level Security) ----------
+
+alter table public.profile  enable row level security;
+alter table public.skills   enable row level security;
+alter table public.services enable row level security;
+alter table public.stats    enable row level security;
+alter table public.projects enable row level security;
+alter table public.messages enable row level security;
+alter table public.admins   enable row level security;   -- aucune règle : table invisible depuis l'API
+
+-- Contenu : lecture publique, écriture réservée aux administrateurs.
+do $$
+declare t text;
+begin
+  foreach t in array array['profile', 'skills', 'services', 'stats', 'projects'] loop
+    execute format('drop policy if exists "Lecture publique" on public.%I', t);
+    execute format('drop policy if exists "Écriture admin" on public.%I', t);
+    execute format('create policy "Lecture publique" on public.%I for select to anon, authenticated using (true)', t);
+    execute format('create policy "Écriture admin" on public.%I for all to authenticated using (public.is_admin()) with check (public.is_admin())', t);
+  end loop;
+end $$;
+
+-- Anciennes règles de la première version (noms différents), supprimées pour éviter les doublons.
+drop policy if exists "Lecture publique du profil"       on public.profile;
+drop policy if exists "Lecture publique des compétences" on public.skills;
+drop policy if exists "Lecture publique des projets"     on public.projects;
+
+-- Messages : les visiteurs peuvent écrire, jamais lire. Seuls les administrateurs lisent et gèrent.
+drop policy if exists "Envoi de messages" on public.messages;
+drop policy if exists "Gestion admin des messages" on public.messages;
+create policy "Envoi de messages" on public.messages
+  for insert to anon, authenticated
+  with check (true);                                       -- les limites de taille sont dans les contraintes de la table
+create policy "Gestion admin des messages" on public.messages
+  for all to authenticated
+  using (public.is_admin()) with check (public.is_admin());
+
+-- Droits d'accès à l'API.
+grant select on public.profile, public.skills, public.services, public.stats, public.projects to anon, authenticated;
+grant insert, update, delete on public.profile, public.skills, public.services, public.stats, public.projects to authenticated;
+grant insert on public.messages to anon, authenticated;
+grant select, update, delete on public.messages to authenticated;
+
+-- ---------- Stockage (photo, CV, captures d'écran) ----------
+
+insert into storage.buckets (id, name, public)
+values ('portfolio', 'portfolio', true)
+on conflict (id) do update set public = true;
+
+drop policy if exists "Lecture publique du bucket portfolio" on storage.objects;
+drop policy if exists "Admin : envoi de fichiers" on storage.objects;
+drop policy if exists "Admin : modification de fichiers" on storage.objects;
+drop policy if exists "Admin : suppression de fichiers" on storage.objects;
+
+create policy "Lecture publique du bucket portfolio" on storage.objects
+  for select to anon, authenticated
+  using (bucket_id = 'portfolio');
+create policy "Admin : envoi de fichiers" on storage.objects
+  for insert to authenticated
+  with check (bucket_id = 'portfolio' and public.is_admin());
+create policy "Admin : modification de fichiers" on storage.objects
+  for update to authenticated
+  using (bucket_id = 'portfolio' and public.is_admin())
+  with check (bucket_id = 'portfolio' and public.is_admin());
+create policy "Admin : suppression de fichiers" on storage.objects
+  for delete to authenticated
+  using (bucket_id = 'portfolio' and public.is_admin());
+
+
+-- ============================================================
+-- Données initiales du profil (ne remplace pas les valeurs existantes)
+-- ============================================================
+insert into public.profile (
+  id, full_name, title, title_en, tagline, tagline_en,
+  hero_words, hero_words_en, bio, bio_en, location,
+  languages, languages_en, education, education_en,
+  email, phone, github_url, linkedin_url, photo_path,
+  cv_path, cv_path_en, available
+)
+values (
+  1,
+  'Martin Manampisoa',
+  'Développeur web et mobile fullstack',
+  'Fullstack web and mobile developer',
+  'Jeune diplômé en informatique, je cherche une équipe où progresser sur des projets concrets, du back-end jusqu’à l’interface.',
+  'Recent computer science graduate looking for a team where I can grow on real projects, from the back end to the interface.',
+  array['des applications web rapides', 'des applications mobiles React Native', 'des API REST sécurisées', 'des outils de gestion sur mesure', 'des fonctionnalités d’IA']::text[],
+  array['fast web applications', 'React Native mobile apps', 'secure REST APIs', 'custom management tools', 'AI-powered features']::text[],
+  'Diplômé d’une licence en informatique (mention Bien) à l’Université Adventiste Zurcher, à Antsirabe, je construis des applications complètes avec React, TypeScript et Node.js, sur le web comme sur mobile avec React Native.
+
+Pendant mon stage chez Connect Talent, j’ai développé une application de gestion d’hôtel et réduit de 30 % le temps de chargement des pages en optimisant les requêtes et le bundle. Mon projet de fin d’études, Skill2Study, aide les bacheliers à choisir leur filière grâce à un moteur de recommandation.
+
+J’aime les projets où le code résout un problème concret, et je travaille volontiers en équipe Agile : sprints, revues de code, livraisons fréquentes.',
+  'I hold a bachelor’s degree in computer science (mention Bien) from Université Adventiste Zurcher in Antsirabe. I build complete applications with React, TypeScript and Node.js, on the web and on mobile with React Native.
 
 During my internship at Connect Talent, I developed a hotel management application and cut page load time by 30% by optimising queries and the bundle. My final-year project, Skill2Study, helps high-school graduates choose a degree programme thanks to a recommendation engine.
 
-I enjoy projects where code solves a real problem, and I like working in Agile teams: sprints, code reviews and frequent releases.', 'Antananarivo, Madagascar', 'Malgache (langue maternelle), français (courant), anglais (intermédiaire)', 'Malagasy (native), French (fluent), English (intermediate)', 'Licence en informatique, Université Adventiste Zurcher, 2023 – 2026 (mention Bien)', 'Bachelor’s degree in computer science, Université Adventiste Zurcher, 2023 – 2026 (mention Bien)', 'martinmanampisoa5@gmail.com', null, 'https://github.com/Martin42746284', null, 'photo.jpg', 'cv.pdf', 'cv-en.pdf', true)
+I enjoy projects where code solves a real problem, and I like working in Agile teams: sprints, code reviews and frequent releases.',
+  'Antananarivo, Madagascar',
+  'Malgache (langue maternelle), français (courant), anglais (intermédiaire)',
+  'Malagasy (native), French (fluent), English (intermediate)',
+  'Licence en informatique, Université Adventiste Zurcher, 2023 – 2026 (mention Bien)',
+  'Bachelor’s degree in computer science, Université Adventiste Zurcher, 2023 – 2026 (mention Bien)',
+  'martinmanampisoa5@gmail.com',
+  null,
+  'https://github.com/Martin42746284',
+  null,
+  'photo.jpg',
+  'cv.pdf',
+  'cv-en.pdf',
+  true
+)
 on conflict (id) do update set
   title_en = coalesce(public.profile.title_en, excluded.title_en),
   tagline_en = coalesce(public.profile.tagline_en, excluded.tagline_en),

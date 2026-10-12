@@ -31,18 +31,12 @@ export function Header({ name, active, theme, onToggleTheme }: Props) {
     return () => window.removeEventListener('keydown', onKey);
   }, [menuOpen]);
 
-  const initials = name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2);
-
   return (
     <header className="header" data-scrolled={scrolled} data-open={menuOpen}>
       <div className="container header__bar">
         <a className="brand" href="#top" onClick={() => setMenuOpen(false)}>
           <span className="brand__mark" aria-hidden="true">
-            {initials}
+            <img src="/favicon.svg" alt="Logo" className="brand__logo" />
           </span>
           <span className="brand__name">{name}</span>
         </a>

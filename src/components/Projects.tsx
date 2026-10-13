@@ -11,7 +11,7 @@ const CATEGORY_ICON: Record<ProjectCategory, typeof WebIcon> = {
   Mobile: MobileIcon,
   API: ApiIcon,
 };
-
+ 
 /** Nombre de technologies affichées sur une carte (le reste est résumé par « +N »). */
 const MAX_TAGS = 3;
 const MAX_VISIBLE_PROJECTS = 6;

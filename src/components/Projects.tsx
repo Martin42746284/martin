@@ -14,6 +14,7 @@ const CATEGORY_ICON: Record<ProjectCategory, typeof WebIcon> = {
 
 /** Nombre de technologies affichées sur une carte (le reste est résumé par « +N »). */
 const MAX_TAGS = 3;
+const MAX_VISIBLE_PROJECTS = 6;
 
 type Filter = 'Tous' | ProjectCategory;
 
@@ -176,13 +177,15 @@ function ProjectDialog({ project, onClose }: { project: Project; onClose: () => 
 export function Projects({ projects }: { projects: Project[] }) {
   const { t } = useI18n();
   const [filter, setFilter] = useState<Filter>('Tous');
+  const [showAll, setShowAll] = useState(false);
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
   const categories = useMemo(
     () => ['Tous', ...new Set(projects.map((project) => project.category))] as Filter[],
     [projects],
   );
-  const visible = projects.filter((project) => filter === 'Tous' || project.category === filter);
+  const filtered = projects.filter((project) => filter === 'Tous' || project.category === filter);
+  const visible = showAll ? filtered : filtered.slice(0, MAX_VISIBLE_PROJECTS);
   const current = projects.find((project) => project.slug === openSlug);
 
   return (
@@ -210,6 +213,14 @@ export function Projects({ projects }: { projects: Project[] }) {
             <ProjectCard key={project.slug} project={project} index={index} onOpen={() => setOpenSlug(project.slug)} />
           ))}
         </ul>
+
+        {!showAll && filtered.length > MAX_VISIBLE_PROJECTS && (
+          <div className="projects__more">
+            <button type="button" className="btn btn--primary" onClick={() => setShowAll(true)}>
+              {t('projects.showAll')}
+            </button>
+          </div>
+        )}
 
         {current && <ProjectDialog key={current.slug} project={current} onClose={() => setOpenSlug(null)} />}
       </div>

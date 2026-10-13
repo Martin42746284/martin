@@ -687,6 +687,12 @@ textarea {
   list-style: none;
 }
 
+.projects__more {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
 .pgrid__empty {
   grid-column: 1 / -1;
   padding: 2rem 0;

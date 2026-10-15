@@ -232,7 +232,7 @@ I enjoy projects where code solves a real problem, and I like working in Agile t
   null,
   'https://github.com/Martin42746284',
   null,
-  'photo.jpg',
+  'photo-martin.webp',
   'cv.pdf',
   'cv-en.pdf',
   true

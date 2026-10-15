@@ -23,7 +23,7 @@ export const fallback: PortfolioData = {
     "phone": null,
     "github_url": "https://github.com/Martin42746284",
     "linkedin_url": null,
-    "photo_path": "photo.jpg",
+    "photo_path": "photo-martin.webp",
     "cv_path": "cv.pdf",
     "available": true,
     "title_en": "Fullstack web and mobile developer",

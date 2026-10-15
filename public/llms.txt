@@ -1,0 +1,24 @@
+# Martin Manampisoa — Portfolio
+
+> Fullstack web and mobile developer in Antananarivo, Madagascar. Recent computer science graduate (Université Adventiste Zurcher). Builds complete applications with React, TypeScript, Node.js and React Native, backed by PostgreSQL and Supabase. Open to work.
+
+This site is a single-page application: all content is rendered client-side from the HTML document at `/`. Sections appear in this order on the page:
+
+- **Hero**: name, current role, availability status, rotating specialties, CV download links, GitHub and email.
+- **About**: biography, education, languages, key figures (experience, performance work).
+- **Services**: web applications, mobile applications (React Native), back-end/REST APIs, custom management tools, AI-powered features.
+- **Skills**: languages (Python, TypeScript, JavaScript, PHP, Java, C…), front-end, back-end, mobile, databases (PostgreSQL, MySQL, MongoDB), AI/data (scikit-learn, OpenAI API), tools (Git, Docker, CI/CD, Agile).
+- **Projects**: five projects, each with a details dialog — Skill2Study (AI university guidance), Plume Relais (collaborative writing mobile app), SmartEpicerie (grocery management), E-learning API, Library API.
+- **Contact**: email martinmanampisoa5@gmail.com, GitHub, location. The contact form stores messages in a database; email works too.
+
+## Links
+
+- [GitHub profile](https://github.com/Martin42746284)
+- [CV in French](/CV_Martin_Manampisoa.pdf)
+- [CV in English](/CV_Martin_Manampisoa_EN.pdf)
+
+## Contact
+
+- Email: martinmanampisoa5@gmail.com
+- Location: Antananarivo, Madagascar
+- Languages: Malagasy, French, English

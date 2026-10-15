@@ -81,9 +81,9 @@ export function Header({ name, active, theme, onToggleTheme }: Props) {
   return (
     <header className="header" data-scrolled={scrolled} data-open={menuOpen} ref={rootRef}>
       <div className="container header__bar">
-        <a className="brand" href="#top" onClick={() => setMenuOpen(false)}>
+        <a className="brand" href="#top" onClick={() => setMenuOpen(false)} aria-label={name}>
           <span className="brand__mark" aria-hidden="true">
-            <img src="/favicon.svg" alt="Logo" className="brand__logo" />
+            <img src="/favicon.svg" alt="" className="brand__logo" />
           </span>
           <span className="brand__name">{name}</span>
         </a>

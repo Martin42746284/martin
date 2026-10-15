@@ -30,7 +30,11 @@ export function CountUp({ value, suffix = '', duration = 1600 }: Props) {
   }, [shown, value, duration]);
 
   return (
-    <span ref={ref} aria-label={`${value}${suffix}`}>
+    <span ref={ref}>
+      <span className="sr-only">
+        {value}
+        {suffix}
+      </span>
       <span aria-hidden="true">
         {Math.round(current)}
         {suffix}

@@ -33,12 +33,12 @@ export default function App() {
 
   return (
     <>
-      <a className="skip-link" href="#a-propos">
+      <a className="skip-link" href="#contenu">
         {t('skip')}
       </a>
       <ScrollProgress />
       <Header name={data.profile.full_name} active={active} theme={theme} onToggleTheme={toggle} />
-      <main>
+      <main id="contenu" tabIndex={-1}>
         <Hero profile={data.profile} chips={chips} />
         <Marquee items={skillNames} />
         <About profile={data.profile} stats={data.stats} />

@@ -156,6 +156,11 @@ textarea {
   transform: none;
 }
 
+/* Cible du lien d'évitement : pas d'encadré de focus sur toute la largeur. */
+#contenu:focus {
+  outline: none;
+}
+
 /* ---------- En-tête ---------- */
 
 .header {
@@ -221,11 +226,11 @@ textarea {
 }
 
 .nav__link:hover,
-.nav__link[aria-current='true'] {
+.nav__link[aria-current='location'] {
   color: var(--ink);
 }
 
-.nav__link[aria-current='true'] {
+.nav__link[aria-current='location'] {
   border-bottom-color: var(--accent);
 }
 
@@ -237,6 +242,8 @@ textarea {
 
 .lang {
   display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   padding: 0.2rem;
   border: 1.5px solid var(--line);
   border-radius: 10px;
@@ -268,8 +275,8 @@ textarea {
 .icon-btn {
   display: grid;
   place-items: center;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem;
+  height: 2.75rem;
   border: 1.5px solid var(--line);
   border-radius: 10px;
   background: transparent;
@@ -461,6 +468,11 @@ textarea {
   justify-self: end;
   width: min(100%, 22rem);
   aspect-ratio: 4 / 5;
+}
+
+/* Le <picture> du portrait ne doit pas changer la mise en page (l'image reste dimensionnée par .portrait). */
+.portrait picture {
+  display: contents;
 }
 
 .portrait__arch,
@@ -1817,12 +1829,12 @@ a.contact__row:hover .contact__value {
 
   .nav__link {
     display: block;
-    padding: 0.8rem 0;
+    padding: 0.9rem 0;
     border-bottom: 1px solid var(--line);
     font-size: 1.1rem;
   }
 
-  .nav__link[aria-current='true'] {
+  .nav__link[aria-current='location'] {
     border-bottom-color: var(--accent);
   }
 

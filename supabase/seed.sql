@@ -152,12 +152,10 @@ drop policy if exists "Lecture publique du profil"       on public.profile;
 drop policy if exists "Lecture publique des compétences" on public.skills;
 drop policy if exists "Lecture publique des projets"     on public.projects;
 
--- Messages : les visiteurs peuvent écrire, jamais lire. Seuls les administrateurs lisent et gèrent.
+-- Messages : insertion uniquement via la fonction Edge « contact » (Turnstile vérifié côté serveur),
+-- lecture et gestion réservées aux administrateurs.
 drop policy if exists "Envoi de messages" on public.messages;
 drop policy if exists "Gestion admin des messages" on public.messages;
-create policy "Envoi de messages" on public.messages
-  for insert to anon, authenticated
-  with check (true);                                       -- les limites de taille sont dans les contraintes de la table
 create policy "Gestion admin des messages" on public.messages
   for all to authenticated
   using (public.is_admin()) with check (public.is_admin());
@@ -165,7 +163,7 @@ create policy "Gestion admin des messages" on public.messages
 -- Droits d'accès à l'API.
 grant select on public.profile, public.skills, public.services, public.stats, public.projects to anon, authenticated;
 grant insert, update, delete on public.profile, public.skills, public.services, public.stats, public.projects to authenticated;
-grant insert on public.messages to anon, authenticated;
+grant insert on public.messages to authenticated;
 grant select, update, delete on public.messages to authenticated;
 
 -- ---------- Stockage (photo, CV, captures d'écran) ----------

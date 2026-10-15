@@ -1,14 +1,18 @@
-import { useState, type FormEvent, type ReactNode } from 'react';
+import { useCallback, useRef, useState, type FormEvent, type ReactNode } from 'react';
 import { useI18n } from '../lib/i18n';
-import { supabase } from '../lib/supabase';
+import { getSupabase } from '../lib/supabase';
 import type { ContactMessage, Profile } from '../lib/types';
 import { CheckIcon, GithubIcon, LinkedinIcon, MailIcon, PhoneIcon, PinIcon } from './icons';
 import { Reveal } from './Reveal';
 import { SectionHead } from './SectionHead';
+import { Turnstile } from './Turnstile';
 
 type Status = 'idle' | 'sending' | 'sent' | 'error';
 
 const COOLDOWN_MS = 30_000;
+
+/** Clé publique du widget Cloudflare Turnstile. Sans elle, insertion directe (mode développement). */
+const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | undefined;
 
 interface InfoRow {
   icon: ReactNode;
@@ -39,6 +43,9 @@ export function Contact({ profile }: { profile: Profile }) {
   const { t } = useI18n();
   const [status, setStatus] = useState<Status>('idle');
   const [feedback, setFeedback] = useState('');
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const captchaResetRef = useRef<(() => void) | null>(null);
+  const onCaptcha = useCallback((token: string | null) => setCaptchaToken(token), []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -67,7 +74,8 @@ export function Contact({ profile }: { profile: Profile }) {
     }
 
     // Sans Supabase configuré, on ouvre la messagerie de l'utilisateur.
-    if (!supabase) {
+    const client = await getSupabase();
+    if (!client) {
       const subject = encodeURIComponent(payload.subject || t('contact.mailSubject', { name: payload.name }));
       const body = encodeURIComponent(`${payload.message}\n\n${payload.name}\n${payload.email}`);
       window.location.href = `mailto:${profile.email ?? ''}?subject=${subject}&body=${body}`;
@@ -78,7 +86,27 @@ export function Contact({ profile }: { profile: Profile }) {
 
     setStatus('sending');
     setFeedback('');
-    const { error } = await supabase.from('messages').insert(payload);
+
+    let error: { message: string } | null = null;
+    if (TURNSTILE_SITE_KEY) {
+      if (!captchaToken) {
+        setStatus('error');
+        setFeedback(t('contact.captcha'));
+        return;
+      }
+      const invoked = await client.functions.invoke('contact', {
+        body: { ...payload, token: captchaToken },
+      });
+      error = invoked.error;
+      // Fonction non déployée en développement : insertion directe de secours.
+      if (error && import.meta.env.DEV) {
+        error = (await client.from('messages').insert(payload)).error;
+      }
+      captchaResetRef.current?.();
+      setCaptchaToken(null);
+    } else {
+      error = (await client.from('messages').insert(payload)).error;
+    }
 
     if (error) {
       setStatus('error');
@@ -160,6 +188,12 @@ export function Contact({ profile }: { profile: Profile }) {
                 <label htmlFor="c-website">Ne pas remplir ce champ</label>
                 <input id="c-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
               </div>
+
+              {TURNSTILE_SITE_KEY && (
+                <div className="field">
+                  <Turnstile siteKey={TURNSTILE_SITE_KEY} onToken={onCaptcha} resetRef={captchaResetRef} />
+                </div>
+              )}
 
               <div className="form__footer">
                 <button className="btn btn--primary" type="submit" disabled={sending}>

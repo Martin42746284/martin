@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabase } from '../lib/supabase';
 import { useToast } from './toast';
 
 interface Message {
@@ -22,8 +22,9 @@ export function MessagesPanel({ onUnread }: { onUnread: (count: number) => void 
   const [onlyUnread, setOnlyUnread] = useState(false);
 
   const load = useCallback(async () => {
-    if (!supabase) return;
-    const { data, error } = await supabase.from('messages').select('*').order('created_at', { ascending: false });
+    const client = await getSupabase();
+    if (!client) return;
+    const { data, error } = await client.from('messages').select('*').order('created_at', { ascending: false });
     if (error) {
       notify(`Chargement impossible : ${error.message}`, 'error');
     } else {
@@ -39,16 +40,18 @@ export function MessagesPanel({ onUnread }: { onUnread: (count: number) => void 
   }, [load]);
 
   async function setRead(message: Message, read: boolean) {
-    if (!supabase) return;
-    const { error } = await supabase.from('messages').update({ read }).eq('id', message.id);
+    const client = await getSupabase();
+    if (!client) return;
+    const { error } = await client.from('messages').update({ read }).eq('id', message.id);
     if (error) return notify(`Mise à jour impossible : ${error.message}`, 'error');
     await load();
   }
 
   async function remove(message: Message) {
-    if (!supabase) return;
+    const client = await getSupabase();
+    if (!client) return;
     if (!window.confirm(`Supprimer le message de ${message.name} ? Cette action est définitive.`)) return;
-    const { error } = await supabase.from('messages').delete().eq('id', message.id);
+    const { error } = await client.from('messages').delete().eq('id', message.id);
     if (error) return notify(`Suppression impossible : ${error.message}`, 'error');
     notify('Message supprimé.');
     await load();

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabase } from '../lib/supabase';
 
 export function Login() {
   const [error, setError] = useState('');
@@ -7,11 +7,14 @@ export function Login() {
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!supabase) return;
-    const data = new FormData(event.currentTarget);
+    // currentTarget n'est valable que pendant le dispatch : à capturer avant tout await.
+    const form = event.currentTarget;
+    const client = await getSupabase();
+    if (!client) return;
+    const data = new FormData(form);
     setBusy(true);
     setError('');
-    const { error: failure } = await supabase.auth.signInWithPassword({
+    const { error: failure } = await client.auth.signInWithPassword({
       email: String(data.get('email') ?? '').trim(),
       password: String(data.get('password') ?? ''),
     });

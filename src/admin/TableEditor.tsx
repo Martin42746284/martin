@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabase } from '../lib/supabase';
 import type { FieldDef } from './fields';
 import { RecordForm, type Values } from './RecordForm';
 import { useToast } from './toast';
@@ -29,8 +29,9 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
   const [filter, setFilter] = useState('');
 
   const load = useCallback(async () => {
-    if (!supabase) return;
-    const { data, error } = await supabase.from(table).select('*').order('sort_order').order('id');
+    const client = await getSupabase();
+    if (!client) return;
+    const { data, error } = await client.from(table).select('*').order('sort_order').order('id');
     if (error) notify(`Chargement impossible : ${error.message}`, 'error');
     else setRows((data ?? []) as Row[]);
     setLoading(false);
@@ -49,12 +50,13 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
   );
 
   async function save(values: Values) {
-    if (!supabase) return;
+    const client = await getSupabase();
+    if (!client) return;
     const payload: Values = { ...values };
     delete payload.id;
 
     if (selected === 'new') {
-      const { data, error } = await supabase.from(table).insert({ ...payload, sort_order: nextOrder }).select().single();
+      const { data, error } = await client.from(table).insert({ ...payload, sort_order: nextOrder }).select().single();
       if (error) return notify(`Ajout impossible : ${error.message}`, 'error');
       notify(`${noun} ajouté.`);
       await load();
@@ -63,7 +65,7 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
     }
 
     if (!current) return;
-    const { error } = await supabase.from(table).update(payload).eq('id', current.id);
+    const { error } = await client.from(table).update(payload).eq('id', current.id);
     if (error) return notify(`Enregistrement impossible : ${error.message}`, 'error');
 
     // Un fichier remplacé ou retiré n'a plus d'utilité : on le supprime du bucket.
@@ -77,9 +79,10 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
   }
 
   async function remove() {
-    if (!supabase || !current) return;
+    const client = await getSupabase();
+    if (!client || !current) return;
     if (!window.confirm(`Supprimer « ${rowLabel(current)} » ? Cette action est définitive.`)) return;
-    const { error } = await supabase.from(table).delete().eq('id', current.id);
+    const { error } = await client.from(table).delete().eq('id', current.id);
     if (error) return notify(`Suppression impossible : ${error.message}`, 'error');
     await Promise.all(imageKeys.map((key) => removeFile(current[key] as string | null)));
     notify(`${noun} supprimé.`);
@@ -88,7 +91,8 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
   }
 
   async function move(row: Row, direction: -1 | 1) {
-    if (!supabase) return;
+    const client = await getSupabase();
+    if (!client) return;
     const order = [...rows];
     const from = order.findIndex((item) => item.id === row.id);
     const to = from + direction;
@@ -100,7 +104,7 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
       .map((item, index) => ({ id: item.id, sort_order: index + 1, previous: item.sort_order }))
       .filter((item) => item.previous !== item.sort_order);
     const results = await Promise.all(
-      changes.map((item) => supabase!.from(table).update({ sort_order: item.sort_order }).eq('id', item.id)),
+      changes.map((item) => client.from(table).update({ sort_order: item.sort_order }).eq('id', item.id)),
     );
     const failed = results.find((result) => result.error);
     if (failed?.error) notify(`Déplacement impossible : ${failed.error.message}`, 'error');

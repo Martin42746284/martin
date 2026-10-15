@@ -1,4 +1,4 @@
-import { BUCKET, supabase } from '../lib/supabase';
+import { BUCKET, getSupabase } from '../lib/supabase';
 
 /** Vrai pour un chemin du bucket Supabase (et non une URL ou un fichier local du site). */
 export function isBucketPath(path?: string | null): path is string {
@@ -37,8 +37,9 @@ function safeName(base: string): string {
 }
 
 async function send(path: string, body: Blob | File, contentType: string): Promise<string> {
-  if (!supabase) throw new Error('Supabase n’est pas configuré.');
-  const { error } = await supabase.storage.from(BUCKET).upload(path, body, {
+  const client = await getSupabase();
+  if (!client) throw new Error('Supabase n’est pas configuré.');
+  const { error } = await client.storage.from(BUCKET).upload(path, body, {
     contentType,
     cacheControl: '31536000',
     upsert: false,
@@ -64,6 +65,7 @@ export async function uploadDocument(folder: string, base: string, file: File): 
 
 /** Supprime un fichier du bucket. Sans conséquence si le fichier n'existe pas. */
 export async function removeFile(path?: string | null): Promise<void> {
-  if (!supabase || !isBucketPath(path)) return;
-  await supabase.storage.from(BUCKET).remove([path]);
+  const client = await getSupabase();
+  if (!client || !isBucketPath(path)) return;
+  await client.storage.from(BUCKET).remove([path]);
 }

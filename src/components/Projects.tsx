@@ -207,6 +207,10 @@ export function Projects({ projects }: { projects: Project[] }) {
           ))}
         </div>
 
+        <p className="sr-only" role="status">
+          {t('projects.count', { n: visible.length })}
+        </p>
+
         <ul className="pgrid">
           {visible.length === 0 && <li className="pgrid__empty">{t('projects.empty')}</li>}
           {visible.map((project, index) => (

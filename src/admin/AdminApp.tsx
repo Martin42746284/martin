@@ -1,6 +1,6 @@
 import type { Session } from '@supabase/supabase-js';
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
-import { supabase } from '../lib/supabase';
+import { getSupabase, isSupabaseConfigured, signOut } from '../lib/supabase';
 import './admin.css';
 import { Login } from './Login';
 import { MessagesPanel } from './MessagesPanel';
@@ -97,12 +97,20 @@ function Dashboard({ email }: { email: string }) {
   const [unread, setUnread] = useState(0);
 
   useEffect(() => {
-    if (!supabase) return;
-    supabase
-      .from('messages')
-      .select('id', { count: 'exact', head: true })
-      .eq('read', false)
-      .then(({ count }) => setUnread(count ?? 0));
+    let active = true;
+    void getSupabase().then((client) => {
+      if (!client || !active) return;
+      client
+        .from('messages')
+        .select('id', { count: 'exact', head: true })
+        .eq('read', false)
+        .then(({ count }) => {
+          if (active) setUnread(count ?? 0);
+        });
+    });
+    return () => {
+      active = false;
+    };
   }, []);
 
   const onUnread = useCallback((count: number) => setUnread(count), []);
@@ -114,7 +122,7 @@ function Dashboard({ email }: { email: string }) {
         <div className="adm__user">
           <a href="/">Voir le site</a>
           <span className="adm__email">{email}</span>
-          <button className="btn btn--ghost btn--small" type="button" onClick={() => void supabase?.auth.signOut()}>
+          <button className="btn btn--ghost btn--small" type="button" onClick={() => void signOut()}>
             Se déconnecter
           </button>
         </div>
@@ -214,30 +222,35 @@ export default function AdminApp() {
   }, []);
 
   useEffect(() => {
-    if (!supabase) return;
-    const client = supabase;
     let active = true;
+    let unsubscribe: (() => void) | undefined;
 
-    const check = async (session: Session | null) => {
-      if (!session) return active && setState({ status: 'out' });
-      const { data, error } = await client.rpc('is_admin');
-      if (!active) return;
-      if (error) return setState({ status: 'error', message: error.message });
-      const email = session.user.email ?? '';
-      setState(data === true ? { status: 'ready', email } : { status: 'forbidden', email });
-    };
+    void getSupabase().then((client) => {
+      if (!client || !active) return;
 
-    // Déclenché une première fois au chargement avec la session existante, puis à chaque connexion ou déconnexion.
-    const { data } = client.auth.onAuthStateChange((_event, session) => {
-      window.setTimeout(() => void check(session), 0);
+      const check = async (session: Session | null) => {
+        if (!session) return active && setState({ status: 'out' });
+        const { data, error } = await client.rpc('is_admin');
+        if (!active) return;
+        if (error) return setState({ status: 'error', message: error.message });
+        const email = session.user.email ?? '';
+        setState(data === true ? { status: 'ready', email } : { status: 'forbidden', email });
+      };
+
+      // Déclenché une première fois au chargement avec la session existante, puis à chaque connexion ou déconnexion.
+      const { data } = client.auth.onAuthStateChange((_event, session) => {
+        window.setTimeout(() => void check(session), 0);
+      });
+      unsubscribe = () => data.subscription.unsubscribe();
     });
+
     return () => {
       active = false;
-      data.subscription.unsubscribe();
+      unsubscribe?.();
     };
   }, []);
 
-  if (!supabase) {
+  if (!isSupabaseConfigured) {
     return (
       <Notice title="Supabase n’est pas configuré">
         <p className="muted">
@@ -261,7 +274,7 @@ export default function AdminApp() {
         <p className="muted">
           Vérifiez que <code>supabase/schema.sql</code> a bien été exécuté : il crée la fonction <code>is_admin</code>.
         </p>
-        <button className="btn btn--ghost" type="button" onClick={() => void supabase?.auth.signOut()}>
+        <button className="btn btn--ghost" type="button" onClick={() => void signOut()}>
           Se déconnecter
         </button>
       </Notice>
@@ -275,7 +288,7 @@ export default function AdminApp() {
           Le compte <strong>{state.email}</strong> est connecté, mais il n’est pas administrateur. Exécutez <code>supabase/make-admin.sql</code> dans
           le SQL Editor de Supabase, puis rechargez cette page.
         </p>
-        <button className="btn btn--ghost" type="button" onClick={() => void supabase?.auth.signOut()}>
+        <button className="btn btn--ghost" type="button" onClick={() => void signOut()}>
           Se déconnecter
         </button>
       </Notice>

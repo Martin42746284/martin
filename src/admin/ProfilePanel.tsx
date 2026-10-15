@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { fallback } from '../data/fallback';
-import { supabase } from '../lib/supabase';
+import { getSupabase } from '../lib/supabase';
 import type { FieldDef } from './fields';
 import { RecordForm, type Values } from './RecordForm';
 import { useToast } from './toast';
@@ -48,22 +48,30 @@ export function ProfilePanel() {
   const [initial, setInitial] = useState<Values | null>(null);
 
   useEffect(() => {
-    if (!supabase) return;
-    supabase
-      .from('profile')
-      .select('*')
-      .eq('id', 1)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (error) notify(`Chargement impossible : ${error.message}`, 'error');
-        // Base pas encore remplie : on propose le contenu d'origine, qui sera créé à l'enregistrement.
-        setInitial((data as Values | null) ?? { ...fallback.profile });
-      });
+    let active = true;
+    void getSupabase().then((client) => {
+      if (!client || !active) return;
+      client
+        .from('profile')
+        .select('*')
+        .eq('id', 1)
+        .maybeSingle()
+        .then(({ data, error }) => {
+          if (!active) return;
+          if (error) notify(`Chargement impossible : ${error.message}`, 'error');
+          // Base pas encore remplie : on propose le contenu d'origine, qui sera créé à l'enregistrement.
+          setInitial((data as Values | null) ?? { ...fallback.profile });
+        });
+    });
+    return () => {
+      active = false;
+    };
   }, [notify]);
 
   async function save(values: Values) {
-    if (!supabase || !initial) return;
-    const { error } = await supabase.from('profile').upsert({ ...values, id: 1, updated_at: new Date().toISOString() });
+    const client = await getSupabase();
+    if (!client || !initial) return;
+    const { error } = await client.from('profile').upsert({ ...values, id: 1, updated_at: new Date().toISOString() });
     if (error) return notify(`Enregistrement impossible : ${error.message}`, 'error');
 
     await Promise.all(

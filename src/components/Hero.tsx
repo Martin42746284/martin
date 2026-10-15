@@ -106,15 +106,18 @@ export function Hero({ profile, chips }: Props) {
             <i />
           </span>
           <span className="portrait__arch" aria-hidden="true" />
-          <img
-            className="portrait__img"
-            src={photo}
-            alt={t('hero.portrait', { name: profile.full_name })}
-            width={800}
-            height={1000}
-            fetchPriority="high"
-            onError={() => setPhotoFailed(true)}
-          />
+          <picture>
+            {photo === LOCAL_PHOTO && <source srcSet="/photo-martin.webp" type="image/webp" />}
+            <img
+              className="portrait__img"
+              src={photo}
+              alt={t('hero.portrait', { name: profile.full_name })}
+              width={800}
+              height={1000}
+              fetchPriority="high"
+              onError={() => setPhotoFailed(true)}
+            />
+          </picture>
           {chips.slice(0, 3).map((name, index) => (
             <span className={`chip chip--${index + 1}`} key={name} aria-hidden="true">
               <span className="chip__dot" />

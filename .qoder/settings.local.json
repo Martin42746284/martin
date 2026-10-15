@@ -32,7 +32,28 @@
       "Bash(ls /home/martin/Documents/martin/.env* 2>/dev/null; npm run build 2>&1 | tail -20)",
       "Bash(VITE_SITE_URL=https://example.com VITE_TURNSTILE_SITE_KEY=dummy-key npm run build 2>&1 | tail -4 && echo '--- HEAD ---' && head -40 dist/index.html)",
       "Bash(grep -o '^VITE_[A-Z_]*' /home/martin/Documents/martin/.env | sort && npm run build 2>&1 | tail -3)",
-      "Bash(ls -la /home/martin/Documents/martin/dist/og-image.png && \\(npx vite preview --port 4173 >/tmp/preview.log 2>&1 &\\) && sleep 2 && curl -s -o /dev/null -w 'index: %{http_code}\\\\n' http://localhost:4173/ && curl -s -o /dev/null -w 'og-image: %{http_code} %{size_download}o\\\\n' http://localhost:4173/og-image.png && curl -s -o /dev/null -w 'favicon.ico: %{http_code}\\\\n' http://localhost:4173/favicon.ico; pkill -f 'vite preview' || true)"
+      "Bash(ls -la /home/martin/Documents/martin/dist/og-image.png && \\(npx vite preview --port 4173 >/tmp/preview.log 2>&1 &\\) && sleep 2 && curl -s -o /dev/null -w 'index: %{http_code}\\\\n' http://localhost:4173/ && curl -s -o /dev/null -w 'og-image: %{http_code} %{size_download}o\\\\n' http://localhost:4173/og-image.png && curl -s -o /dev/null -w 'favicon.ico: %{http_code}\\\\n' http://localhost:4173/favicon.ico; pkill -f 'vite preview' || true)",
+      "Bash(supabase --version 2>/dev/null || echo \"CLI non installé\"; ls /home/martin/Documents/martin/supabase/)",
+      "Bash(which chromium chromium-browser google-chrome google-chrome-stable 2>/dev/null; ls ~/.cache/ms-playwright 2>/dev/null; npm ls playwright puppeteer 2>/dev/null | grep -E 'playwright|puppeteer'; python3 -c \"import playwright\" 2>&1 | head -1)",
+      "Bash(VITE_TURNSTILE_SITE_KEY=1x00000000000000000000AA npm run build 2>&1 | tail -2 && \\(npx vite preview --port 4173 >/tmp/preview.log 2>&1 &\\) && sleep 2 && curl -s -o /dev/null -w 'preview: %{http_code}\\\\n' http://localhost:4173/)",
+      "Bash(google-chrome --headless=new --disable-gpu --no-sandbox --window-size=1400,4600 --virtual-time-budget=12000 --screenshot=/tmp/contact-check.png http://localhost:4173/ 2>&1 | tail -2; ls -la /tmp/contact-check.png)",
+      "Bash(google-chrome --headless=new --disable-gpu --no-sandbox --window-size=1400,9200 --virtual-time-budget=15000 --screenshot=/tmp/contact-full.png http://localhost:4173/ 2>&1 | tail -1; python3 -c \"\nfrom PIL import Image\nimg = Image.open\\('/tmp/contact-full.png'\\)\nw, h = img.size\nprint\\('size:', w, h\\)\nimg.crop\\(\\(0, h-1400, w, h\\)\\).save\\('/tmp/contact-bottom.png'\\)\n\")",
+      "Bash(grep -n 'onOpen\\\\|className=\"pcard' /home/martin/Documents/martin/src/components/Projects.tsx | head -20)",
+      "Bash(pkill -f 'remote-debugging-port=9222' 2>/dev/null; \\(google-chrome --headless=new --disable-gpu --no-sandbox --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-cdp about:blank >/dev/null 2>&1 &\\) ; sleep 2; node /tmp/cdp-test.mjs)",
+      "Bash(pkill -f 'remote-debugging-port=922[2]' 2>/dev/null; \\(google-chrome --headless=new --disable-gpu --no-sandbox --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-cdp about:blank >/dev/null 2>&1 &\\) ; sleep 2; curl -s http://localhost:9222/json/version | head -2)",
+      "Bash(pkill -f 'remote-debugging-por[t]=9222' 2>/dev/null; echo done)",
+      "Bash(\\(google-chrome --headless=new --disable-gpu --no-sandbox --remote-debugging-port=9222 --user-data-dir=/tmp/chrome-cdp about:blank >/dev/null 2>&1 &\\) ; sleep 2; node /tmp/cdp-test.mjs)",
+      "Bash(node --experimental-websocket /tmp/cdp-test.mjs 2>&1 | grep -v ExperimentalWarning)",
+      "Bash(git -C /home/martin/Documents/martin remote -v; git -C /home/martin/Documents/martin log --oneline -3)",
+      "Bash(git -C /home/martin/Documents/martin status --short | head; git -C /home/martin/Documents/martin show --stat 7346698 | head -40)",
+      "Bash(grep -n -A 20 'create table.*projects' /home/martin/Documents/martin/supabase/schema.sql | head -30; echo '--- seed insert ---'; grep -n -B2 -A8 \"insert into public.projects\" /home/martin/Documents/martin/supabase/seed.sql | head -40)",
+      "Bash(grep -n -B3 -A12 'Envoi de messages' /home/martin/Documents/martin/supabase/seed.sql | head -40; echo '=== grants ==='; grep -n 'public.messages' /home/martin/Documents/martin/supabase/seed.sql | grep grant)",
+      "Bash(ls -R /home/martin/Documents/martin/supabase/functions/ && rm /home/martin/Documents/martin/src/components/Turnstile.tsx /home/martin/Documents/martin/supabase/close-messages-insert.sql && rm -r /home/martin/Documents/martin/supabase/functions && echo '--- deleted ---' && ls /home/martin/Documents/martin/supabase/)",
+      "Bash(npm run build 2>&1 | tail -6)",
+      "Bash(pkill -f 'vite preview' 2>/dev/null; sleep 1; \\(npx vite preview --port 4173 >/tmp/preview.log 2>&1 &\\); sleep 2; curl -s -o /dev/null -w 'preview: %{http_code}\\\\n' http://localhost:4173/ && google-chrome --headless=new --disable-gpu --no-sandbox --window-size=1400,9200 --virtual-time-budget=15000 --screenshot=/tmp/contact-final.png http://localhost:4173/ 2>&1 | tail -1)",
+      "Bash(pkill -f 'vit[e] preview' 2>/dev/null; sleep 1; echo ok)",
+      "Bash(\\(npx vite preview --port 4173 >/tmp/preview.log 2>&1 &\\); sleep 2; curl -s -o /dev/null -w 'preview: %{http_code}\\\\n' http://localhost:4173/ && google-chrome --headless=new --disable-gpu --no-sandbox --window-size=1400,9200 --virtual-time-budget=15000 --screenshot=/tmp/contact-final.png http://localhost:4173/ 2>&1 | tail -1)",
+      "Bash(pkill -f 'vit[e] preview' 2>/dev/null; pkill -f 'remote-debugging-por[t]=9222' 2>/dev/null; echo ok)"
     ]
   }
 }

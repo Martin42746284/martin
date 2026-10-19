@@ -111,6 +111,38 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
     await load();
   }
 
+  if (selected !== null) {
+    return (
+      <div className="panel">
+        <div className="edit__back">
+          <button className="btn btn--ghost btn--small" type="button" onClick={() => setSelected(null)}>
+            ← Retour aux {title.toLowerCase()}
+          </button>
+        </div>
+        <header className="panel__head">
+          <div>
+            <h2>{current ? rowLabel(current) : `Nouveau ${noun.toLowerCase()}`}</h2>
+            <p>{current ? `Modifiez cet élément puis enregistrez.` : `Renseignez les informations puis enregistrez.`}</p>
+          </div>
+        </header>
+
+        <div className="editor">
+          {selected === 'new' && (
+            <RecordForm
+              key="new"
+              fields={fields}
+              initial={blank()}
+              submitLabel={`Ajouter ce ${noun.toLowerCase()}`}
+              onSubmit={save}
+              onCancel={() => setSelected(null)}
+            />
+          )}
+          {current && <RecordForm key={current.id} fields={fields} initial={current} onSubmit={save} onDelete={remove} />}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="panel">
       <header className="panel__head">
@@ -123,73 +155,48 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
         </button>
       </header>
 
-      <div className="split">
-        <div className="list-wrap">
-          {rows.length > 8 && (
-            <input
-              className="list__filter"
-              type="search"
-              placeholder="Filtrer la liste"
-              aria-label="Filtrer la liste"
-              value={filter}
-              onChange={(event) => setFilter(event.target.value)}
-            />
-          )}
-          {loading ? (
-            <p className="muted">Chargement…</p>
-          ) : rows.length === 0 ? (
-            <p className="muted">Rien pour le moment. Utilisez « Ajouter » pour créer le premier élément.</p>
-          ) : (
-            <ul className="list">
-              {visibleRows.map((row) => (
-                <li key={row.id} className="list__item" data-active={selected === row.id}>
-                  <button type="button" className="list__main" onClick={() => setSelected(row.id)}>
-                    <span className="list__title">{rowLabel(row)}</span>
-                    {rowSub && <span className="list__sub">{rowSub(row)}</span>}
-                  </button>
-                  {!filter && (
-                    <span className="list__move">
-                      <button type="button" aria-label={`Monter ${rowLabel(row)}`} onClick={() => move(row, -1)} disabled={rows[0].id === row.id}>
-                        ↑
-                      </button>
-                      <button
-                        type="button"
-                        aria-label={`Descendre ${rowLabel(row)}`}
-                        onClick={() => move(row, 1)}
-                        disabled={rows[rows.length - 1].id === row.id}
-                      >
-                        ↓
-                      </button>
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <div className="editor">
-          {selected === null && <p className="muted">Choisissez un élément dans la liste pour le modifier, ou ajoutez-en un.</p>}
-          {selected === 'new' && (
-            <RecordForm
-              key="new"
-              fields={fields}
-              initial={blank()}
-              submitLabel={`Ajouter ce ${noun.toLowerCase()}`}
-              onSubmit={save}
-              onCancel={() => setSelected(null)}
-            />
-          )}
-          {current && (
-            <RecordForm
-              key={current.id}
-              fields={fields}
-              initial={current}
-              onSubmit={save}
-              onDelete={remove}
-            />
-          )}
-        </div>
+      <div className="list-wrap">
+        {rows.length > 8 && (
+          <input
+            className="list__filter"
+            type="search"
+            placeholder="Filtrer la liste"
+            aria-label="Filtrer la liste"
+            value={filter}
+            onChange={(event) => setFilter(event.target.value)}
+          />
+        )}
+        {loading ? (
+          <p className="muted">Chargement…</p>
+        ) : rows.length === 0 ? (
+          <p className="muted">Rien pour le moment. Utilisez « Ajouter » pour créer le premier élément.</p>
+        ) : (
+          <ul className="list">
+            {visibleRows.map((row) => (
+              <li key={row.id} className="list__item">
+                <button type="button" className="list__main" onClick={() => setSelected(row.id)}>
+                  <span className="list__title">{rowLabel(row)}</span>
+                  {rowSub && <span className="list__sub">{rowSub(row)}</span>}
+                </button>
+                {!filter && (
+                  <span className="list__move">
+                    <button type="button" aria-label={`Monter ${rowLabel(row)}`} onClick={() => move(row, -1)} disabled={rows[0].id === row.id}>
+                      ↑
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`Descendre ${rowLabel(row)}`}
+                      onClick={() => move(row, 1)}
+                      disabled={rows[rows.length - 1].id === row.id}
+                    >
+                      ↓
+                    </button>
+                  </span>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

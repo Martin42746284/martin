@@ -23,6 +23,8 @@ export interface FieldDef {
   maxSide?: number;
   /** Occupe toute la largeur du formulaire. */
   wide?: boolean;
+  /** Titre du groupe de champs dans lequel afficher ce champ. */
+  section?: string;
 }
 
 interface Props {

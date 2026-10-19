@@ -111,18 +111,10 @@ code {
   font-weight: 700;
 }
 
-.adm__user {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem 1.25rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-}
-
-.adm__user a {
+.adm__site {
   color: var(--brand);
   font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .adm__body {
@@ -140,6 +132,7 @@ code {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  min-height: calc(100vh - 7rem);
 }
 
 .adm__tab {
@@ -166,6 +159,40 @@ code {
 .adm__tab[aria-current='page'] {
   background: var(--ink);
   color: var(--bg);
+}
+
+.adm__account {
+  position: sticky;
+  bottom: 1rem;
+  display: grid;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.adm__email {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.85rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adm__logout {
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.adm__logout:hover {
+  background: var(--band);
 }
 
 .badge {
@@ -583,22 +610,30 @@ code {
 
   .adm__nav {
     position: static;
-    flex-direction: row;
-    padding-bottom: 0.25rem;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+    gap: 0.5rem;
+    min-height: 0;
   }
 
   .adm__tab {
-    flex: none;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .adm__account {
+    position: static;
+    grid-column: 1 / -1;
+    grid-auto-flow: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.25rem;
   }
 }
 
 @media (max-width: 560px) {
   .record__grid {
     grid-template-columns: minmax(0, 1fr);
-  }
-
-  .adm__email {
-    display: none;
   }
 }

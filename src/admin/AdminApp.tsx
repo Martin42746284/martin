@@ -119,13 +119,7 @@ function Dashboard({ email }: { email: string }) {
     <div className="adm">
       <header className="adm__bar">
         <strong className="adm__brand">Administration</strong>
-        <div className="adm__user">
-          <a href="/">Voir le site</a>
-          <span className="adm__email">{email}</span>
-          <button className="btn btn--ghost btn--small" type="button" onClick={() => void signOut()}>
-            Se déconnecter
-          </button>
-        </div>
+        <a className="adm__site" href="/">Voir le site</a>
       </header>
 
       <div className="adm__body">
@@ -140,6 +134,15 @@ function Dashboard({ email }: { email: string }) {
               )}
             </button>
           ))}
+
+          <div className="adm__account">
+            <span className="adm__email" title={email}>
+              {email}
+            </span>
+            <button className="adm__logout" type="button" onClick={() => void signOut()}>
+              Se déconnecter
+            </button>
+          </div>
         </nav>
 
         <main className="adm__main">

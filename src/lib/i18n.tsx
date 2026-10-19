@@ -33,7 +33,7 @@ const fr = {
   'about.languages': 'Langues',
   'about.availability': 'Disponibilité',
   'about.availYes': 'Poste ou stage, dès maintenant',
-  'about.availNo': 'Pas pour le moment',
+  'about.availNo': 'Remote ou colaboration ponctuelle pour le moment',
 
   'services.title': 'Services',
   'services.lead': 'Ce que je peux construire pour vous, de l’idée à la mise en ligne.',
@@ -122,7 +122,7 @@ const en: Record<Key, string> = {
   'about.languages': 'Languages',
   'about.availability': 'Availability',
   'about.availYes': 'Job or internship, available now',
-  'about.availNo': 'Not at the moment',
+  'about.availNo': 'Remote or occasional collaboration for now',
 
   'services.title': 'Services',
   'services.lead': 'What I can build for you, from the idea to going live.',

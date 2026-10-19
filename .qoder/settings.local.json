@@ -67,7 +67,9 @@
       "Bash(find . -type d -name node_modules -prune -o -type f \\\\\\( -name \"*.tsx\" -o -name \"*.jsx\" -o -name \"*.vue\" -o -name \"*.ts\" -o -name \"*.js\" \\\\\\) -print | grep -i admin | head -50)",
       "Bash(ls -la; echo \"---\"; cat package.json 2>/dev/null | head -40)",
       "Bash(npm run typecheck 2>&1 | tail -20)",
-      "Bash(npm run typecheck 2>&1 | tail -15)"
+      "Bash(npm run typecheck 2>&1 | tail -15)",
+      "Bash(npm run typecheck 2>&1 | tail -12)",
+      "Bash(npm run build 2>&1 | tail -15)"
     ]
   }
 }

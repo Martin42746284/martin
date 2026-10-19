@@ -7,6 +7,7 @@ import { MessagesPanel } from './MessagesPanel';
 import { ProfilePanel } from './ProfilePanel';
 import { TableEditor } from './TableEditor';
 import { ToastProvider } from './toast';
+import { ConfirmProvider } from './confirm';
 import type { FieldDef } from './fields';
 
 type Tab = 'messages' | 'profile' | 'projects' | 'services' | 'skills' | 'stats';
@@ -300,7 +301,9 @@ export default function AdminApp() {
 
   return (
     <ToastProvider>
-      <Dashboard email={state.email} />
+      <ConfirmProvider>
+        <Dashboard email={state.email} />
+      </ConfirmProvider>
     </ToastProvider>
   );
 }

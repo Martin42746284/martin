@@ -3,6 +3,7 @@ import { getSupabase } from '../lib/supabase';
 import type { FieldDef } from './fields';
 import { RecordForm, type Values } from './RecordForm';
 import { useToast } from './toast';
+import { useConfirm } from './confirm';
 import { removeFile } from './upload';
 
 type Row = Record<string, unknown> & { id: number; sort_order?: number };
@@ -23,6 +24,7 @@ interface Props {
 
 export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSub, blank }: Props) {
   const notify = useToast();
+  const confirm = useConfirm();
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<number | 'new' | null>(null);
@@ -81,7 +83,11 @@ export function TableEditor({ table, title, intro, noun, fields, rowLabel, rowSu
   async function remove() {
     const client = await getSupabase();
     if (!client || !current) return;
-    if (!window.confirm(`Supprimer « ${rowLabel(current)} » ? Cette action est définitive.`)) return;
+    const confirmed = await confirm({
+      title: `Supprimer ce ${noun.toLowerCase()} ?`,
+      message: `« ${rowLabel(current)} » sera définitivement supprimé.`,
+    });
+    if (!confirmed) return;
     const { error } = await client.from(table).delete().eq('id', current.id);
     if (error) return notify(`Suppression impossible : ${error.message}`, 'error');
     await Promise.all(imageKeys.map((key) => removeFile(current[key] as string | null)));

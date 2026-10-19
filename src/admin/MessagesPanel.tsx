@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { getSupabase } from '../lib/supabase';
 import { useToast } from './toast';
+import { useConfirm } from './confirm';
 
 interface Message {
   id: number;
@@ -17,6 +18,7 @@ const formatDate = (iso: string) =>
 
 export function MessagesPanel({ onUnread }: { onUnread: (count: number) => void }) {
   const notify = useToast();
+  const confirm = useConfirm();
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(true);
   const [onlyUnread, setOnlyUnread] = useState(false);
@@ -50,7 +52,11 @@ export function MessagesPanel({ onUnread }: { onUnread: (count: number) => void 
   async function remove(message: Message) {
     const client = await getSupabase();
     if (!client) return;
-    if (!window.confirm(`Supprimer le message de ${message.name} ? Cette action est définitive.`)) return;
+    const confirmed = await confirm({
+      title: 'Supprimer ce message ?',
+      message: `Le message de ${message.name} sera définitivement supprimé.`,
+    });
+    if (!confirmed) return;
     const { error } = await client.from('messages').delete().eq('id', message.id);
     if (error) return notify(`Suppression impossible : ${error.message}`, 'error');
     notify('Message supprimé.');

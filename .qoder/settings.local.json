@@ -69,7 +69,8 @@
       "Bash(npm run typecheck 2>&1 | tail -20)",
       "Bash(npm run typecheck 2>&1 | tail -15)",
       "Bash(npm run typecheck 2>&1 | tail -12)",
-      "Bash(npm run build 2>&1 | tail -15)"
+      "Bash(npm run build 2>&1 | tail -15)",
+      "Bash(npm run build 2>&1 | tail -8)"
     ]
   }
 }

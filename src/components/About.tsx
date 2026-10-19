@@ -31,7 +31,7 @@ export function About({ profile, stats }: Props) {
               </Reveal>
             ))}
           </div>
-          <Reveal as="div" variant="right" delay={120}>
+          <Reveal as="div" variant="right" delay={120} className="about__facts">
             <dl className="facts">
               {facts.map(([term, value]) => (
                 <div className="facts__row" key={term}>

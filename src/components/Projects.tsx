@@ -4,6 +4,7 @@ import { useI18n } from '../lib/i18n';
 import { assetUrl } from '../lib/supabase';
 import type { Project, ProjectCategory } from '../lib/types';
 import { ApiIcon, CloseIcon, ExternalIcon, GithubIcon, MobileIcon, WebIcon } from './icons';
+import { Reveal } from './Reveal';
 import { SectionHead } from './SectionHead';
 
 const CATEGORY_ICON: Record<ProjectCategory, typeof WebIcon> = {
@@ -193,37 +194,43 @@ export function Projects({ projects }: { projects: Project[] }) {
       <div className="container">
         <SectionHead id="projets" title={t('projects.title')} lead={t('projects.lead', { n: projects.length })} />
 
-        <div className="filters" role="group" aria-label={t('projects.filter')}>
-          {categories.map((category) => (
-            <button
-              key={category}
-              type="button"
-              className="filter"
-              aria-pressed={filter === category}
-              onClick={() => setFilter(category)}
-            >
-              {category === 'Tous' ? t('projects.all') : category}
-            </button>
-          ))}
-        </div>
+        <Reveal>
+          <div className="filters" role="group" aria-label={t('projects.filter')}>
+            {categories.map((category) => (
+              <button
+                key={category}
+                type="button"
+                className="filter"
+                aria-pressed={filter === category}
+                onClick={() => setFilter(category)}
+              >
+                {category === 'Tous' ? t('projects.all') : category}
+              </button>
+            ))}
+          </div>
+        </Reveal>
 
         <p className="sr-only" role="status">
           {t('projects.count', { n: visible.length })}
         </p>
 
         <ul className="pgrid">
-          {visible.length === 0 && <li className="pgrid__empty">{t('projects.empty')}</li>}
+          {visible.length === 0 && (
+            <Reveal as="li" className="pgrid__empty">
+              {t('projects.empty')}
+            </Reveal>
+          )}
           {visible.map((project, index) => (
             <ProjectCard key={project.slug} project={project} index={index} onOpen={() => setOpenSlug(project.slug)} />
           ))}
         </ul>
 
         {!showAll && filtered.length > MAX_VISIBLE_PROJECTS && (
-          <div className="projects__more">
+          <Reveal className="projects__more" delay={100}>
             <button type="button" className="btn btn--primary" onClick={() => setShowAll(true)}>
               {t('projects.showAll')}
             </button>
-          </div>
+          </Reveal>
         )}
 
         {current && <ProjectDialog key={current.slug} project={current} onClose={() => setOpenSlug(null)} />}

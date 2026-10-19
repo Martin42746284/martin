@@ -4,6 +4,7 @@ import { useI18n } from '../lib/i18n';
 import { assetUrl } from '../lib/supabase';
 import type { Profile } from '../lib/types';
 import { GithubIcon, LinkedinIcon, MailIcon } from './icons';
+import { Reveal } from './Reveal';
 import { Rotator } from './Rotator';
 
 const LOCAL_PHOTO = '/photo-martin.jpg';
@@ -98,7 +99,7 @@ export function Hero({ profile, chips }: Props) {
           </ul>
         </div>
 
-        <figure className="portrait">
+        <Reveal as="figure" className="portrait" variant="right" delay={150}>
           <span className="portrait__rings" aria-hidden="true">
             <i />
             <i />
@@ -124,7 +125,7 @@ export function Hero({ profile, chips }: Props) {
               {name}
             </span>
           ))}
-        </figure>
+        </Reveal>
       </div>
     </section>
   );

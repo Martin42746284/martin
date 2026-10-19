@@ -4,7 +4,7 @@ import { useInView } from '../hooks/useInView';
 type Variant = 'up' | 'left' | 'right' | 'scale';
 
 interface Props {
-  as?: 'div' | 'li' | 'section' | 'article' | 'p' | 'ul';
+  as?: 'div' | 'li' | 'section' | 'article' | 'p' | 'ul' | 'figure' | 'footer';
   variant?: Variant;
   /** Délai en millisecondes avant le début de l'animation. */
   delay?: number;

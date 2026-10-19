@@ -1,4 +1,5 @@
 import { useI18n } from '../lib/i18n';
+import { Reveal } from './Reveal';
 
 /** Bandeau de technologies qui défile en continu. */
 export function Marquee({ items }: { items: string[] }) {
@@ -18,11 +19,13 @@ export function Marquee({ items }: { items: string[] }) {
   );
 
   return (
-    <section className="marquee" aria-label={t('marquee.label')}>
-      <div className="marquee__track">
-        {list(false)}
-        {list(true)}
-      </div>
-    </section>
+    <Reveal>
+      <section className="marquee" aria-label={t('marquee.label')}>
+        <div className="marquee__track">
+          {list(false)}
+          {list(true)}
+        </div>
+      </section>
+    </Reveal>
   );
 }

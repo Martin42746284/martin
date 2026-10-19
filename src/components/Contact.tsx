@@ -121,8 +121,8 @@ export function Contact({ profile }: { profile: Profile }) {
         <div className="contact">
           <Reveal className="contact__side" variant="left">
             <ul className="contact__list">
-              {rows.map((row) => (
-                <li key={row.label}>
+              {rows.map((row, index) => (
+                <Reveal as="li" key={row.label} delay={index * 70}>
                   {row.href ? (
                     <a
                       className="contact__row"
@@ -134,29 +134,37 @@ export function Contact({ profile }: { profile: Profile }) {
                   ) : (
                     <div className="contact__row">{rowContent(row)}</div>
                   )}
-                </li>
+                </Reveal>
               ))}
             </ul>
           </Reveal>
 
           <Reveal variant="right" delay={120}>
             <form className="form" onSubmit={onSubmit} noValidate={false}>
-              <div className="field">
-                <label htmlFor="c-name">{t('contact.name')}</label>
-                <input id="c-name" name="name" type="text" autoComplete="name" required maxLength={100} />
-              </div>
-              <div className="field">
-                <label htmlFor="c-email">{t('contact.email')}</label>
-                <input id="c-email" name="email" type="email" autoComplete="email" required maxLength={200} />
-              </div>
-              <div className="field">
-                <label htmlFor="c-subject">{t('contact.subject')}</label>
-                <input id="c-subject" name="subject" type="text" required maxLength={150} placeholder={t('contact.subjectPlaceholder')} />
-              </div>
-              <div className="field">
-                <label htmlFor="c-message">{t('contact.message')}</label>
-                <textarea id="c-message" name="message" rows={2} required minLength={10} maxLength={3000} />
-              </div>
+              <Reveal delay={0}>
+                <div className="field">
+                  <label htmlFor="c-name">{t('contact.name')}</label>
+                  <input id="c-name" name="name" type="text" autoComplete="name" required maxLength={100} />
+                </div>
+              </Reveal>
+              <Reveal delay={80}>
+                <div className="field">
+                  <label htmlFor="c-email">{t('contact.email')}</label>
+                  <input id="c-email" name="email" type="email" autoComplete="email" required maxLength={200} />
+                </div>
+              </Reveal>
+              <Reveal delay={160}>
+                <div className="field">
+                  <label htmlFor="c-subject">{t('contact.subject')}</label>
+                  <input id="c-subject" name="subject" type="text" required maxLength={150} placeholder={t('contact.subjectPlaceholder')} />
+                </div>
+              </Reveal>
+              <Reveal delay={240}>
+                <div className="field">
+                  <label htmlFor="c-message">{t('contact.message')}</label>
+                  <textarea id="c-message" name="message" rows={2} required minLength={10} maxLength={3000} />
+                </div>
+              </Reveal>
 
               <div className="sr-only" aria-hidden="true">
                 <label htmlFor="c-website">Ne pas remplir ce champ</label>

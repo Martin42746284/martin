@@ -88,7 +88,7 @@ export function Header({ name, active, theme, onToggleTheme }: Props) {
           <span className="brand__name">{name}</span>
         </a>
 
-        <nav className="nav" id="menu" aria-label={t('header.mainNav')} ref={navRef}>
+        <nav className="nav" id="menu" aria-label={t('header.mainNav')} ref={navRef} role="navigation">
           <ul className="nav__list">
             {NAV_LINKS.map((link) => (
               <li key={link.id}>

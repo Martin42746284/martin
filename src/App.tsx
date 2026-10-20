@@ -38,7 +38,7 @@ export default function App() {
       </a>
       <ScrollProgress />
       <Header name={data.profile.full_name} active={active} theme={theme} onToggleTheme={toggle} />
-      <main id="contenu" tabIndex={-1}>
+      <main id="contenu" tabIndex={-1} role="main">
         <Hero profile={data.profile} chips={chips} />
         <Marquee items={skillNames} />
         <About profile={data.profile} stats={data.stats} />

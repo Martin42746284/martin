@@ -144,25 +144,57 @@ export function Contact({ profile }: { profile: Profile }) {
               <Reveal delay={0}>
                 <div className="field">
                   <label htmlFor="c-name">{t('contact.name')}</label>
-                  <input id="c-name" name="name" type="text" autoComplete="name" required maxLength={100} />
+                  <input
+                    id="c-name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    required
+                    maxLength={100}
+                    aria-invalid={status === 'error'}
+                  />
                 </div>
               </Reveal>
               <Reveal delay={80}>
                 <div className="field">
                   <label htmlFor="c-email">{t('contact.email')}</label>
-                  <input id="c-email" name="email" type="email" autoComplete="email" required maxLength={200} />
+                  <input
+                    id="c-email"
+                    name="email"
+                    type="email"
+                    autoComplete="email"
+                    required
+                    maxLength={200}
+                    aria-invalid={status === 'error'}
+                  />
                 </div>
               </Reveal>
               <Reveal delay={160}>
                 <div className="field">
                   <label htmlFor="c-subject">{t('contact.subject')}</label>
-                  <input id="c-subject" name="subject" type="text" required maxLength={150} placeholder={t('contact.subjectPlaceholder')} />
+                  <input
+                    id="c-subject"
+                    name="subject"
+                    type="text"
+                    required
+                    maxLength={150}
+                    placeholder={t('contact.subjectPlaceholder')}
+                    aria-invalid={status === 'error'}
+                  />
                 </div>
               </Reveal>
               <Reveal delay={240}>
                 <div className="field">
                   <label htmlFor="c-message">{t('contact.message')}</label>
-                  <textarea id="c-message" name="message" rows={2} required minLength={10} maxLength={3000} />
+                  <textarea
+                    id="c-message"
+                    name="message"
+                    rows={2}
+                    required
+                    minLength={10}
+                    maxLength={3000}
+                    aria-invalid={status === 'error'}
+                  />
                 </div>
               </Reveal>
 

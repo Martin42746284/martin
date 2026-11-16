@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useI18n } from '../lib/i18n';
 import { assetUrl } from '../lib/supabase';
 import type { Project, ProjectCategory } from '../lib/types';
@@ -75,9 +75,16 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: () => void
 function ProjectDialog({ project, onClose }: { project: Project; onClose: () => void }) {
   const { t } = useI18n();
   const titleId = `project-title-${project.slug}`;
+  const dialogRef = useRef<HTMLDialogElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) dialog.showModal();
+  }, []);
 
   return (
     <dialog
+      ref={dialogRef}
       className="pdialog"
       aria-labelledby={titleId}
       onClose={onClose}

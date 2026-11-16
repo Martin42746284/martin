@@ -36,6 +36,12 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: () => void
   return (
     <li className="pcard">
       <article className="pcard__inner">
+        <button
+          type="button"
+          className="pcard__open"
+          onClick={onOpen}
+          aria-label={`${t('projects.show')} - ${project.title}`}
+        />
         <div className="pcard__cover">
           <Cover project={project} />
         </div>
@@ -55,17 +61,6 @@ function ProjectCard({ project, onOpen }: { project: Project; onOpen: () => void
             {extra > 0 && <li aria-label={`+${extra}`}>+{extra}</li>}
           </ul>
 
-          <div className="pcard__actions">
-            <button type="button" className="link-btn" onClick={onOpen} aria-label={`${t('projects.show')} - ${project.title}`}>
-              {t('projects.show')}
-            </button>
-            {project.github_url && (
-              <a className="link-btn" href={project.github_url} target="_blank" rel="noopener noreferrer">
-                <GithubIcon /> {t('projects.source')}
-                <span className="sr-only">{t('projects.newTab', { title: project.title })}</span>
-              </a>
-            )}
-          </div>
         </div>
       </article>
     </li>

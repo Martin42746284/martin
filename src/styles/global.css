@@ -715,9 +715,29 @@ textarea {
   box-shadow: var(--shadow);
 }
 
+.pcard__open {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+
+.pcard__inner:focus-within {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
 .pcard__cover {
   position: relative;
+  z-index: 2;
   aspect-ratio: 16 / 10;
+  pointer-events: none;
 }
 
 /* Visuel du projet : capture d'écran ou motif généré */
@@ -767,10 +787,13 @@ textarea {
 }
 
 .pcard__body {
+  position: relative;
+  z-index: 2;
   display: flex;
   flex: 1;
   flex-direction: column;
   padding: 1.3rem 1.4rem 1.35rem;
+  pointer-events: none;
 }
 
 .pcard__head {
@@ -827,17 +850,6 @@ textarea {
   background: var(--band);
   font-size: 0.85rem;
   font-weight: 500;
-}
-
-.pcard__actions {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 1.4rem;
-  margin-top: 1.1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
 }
 
 html {
